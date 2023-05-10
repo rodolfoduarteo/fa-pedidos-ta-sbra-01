@@ -1,16 +1,24 @@
-using System;
+using System.Threading.Tasks;
+using Func.Models;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
+using Services;
 
-namespace Pedidos.Function
+namespace Func.PedidosFunction
 {
     public class ProcessarPedidosFunction
     {
-        [FunctionName("ProcessarPedidosFunction")]
-        public void Run([ServiceBusTrigger("pedidos", Connection = "SBTASBRA01_SERVICEBUS")]string myQueueItem, ILogger log)
+        private readonly NotificationService _notificationService;
+        public ProcessarPedidosFunction(NotificationService notificationService)
         {
-            log.LogInformation($"C# ServiceBus queue trigger function processed message: {myQueueItem}");
+            _notificationService = notificationService;
+        }
+
+        [FunctionName("ProcessarPedidosFunction")]
+        public async Task ProcessarPedido([ServiceBusTrigger("pedidos", Connection = "SBTASBRA01_SERVICEBUS")]Pedido pedido, ILogger log)
+        {
+            await _notificationService.NotifyAsync("Loja Azure", $"[FUNC] Olá {pedido.Cliente}, seu pedido {pedido.Numero} foi pago e está em separação no estoque!");
+            log.LogInformation($"C# ServiceBus queue trigger function processed message: {pedido.Numero}");
         }
     }
 }
