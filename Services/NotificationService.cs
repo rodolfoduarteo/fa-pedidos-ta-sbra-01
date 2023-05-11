@@ -17,8 +17,8 @@ namespace Services
         {
             var notification = new DiscordNotificationModel(
                 _configuration["DiscordWebHookUrl"],
-                cliente,
-                mensagem);
+                mensagem,
+                cliente);
 
             var httpClient = new HttpClient();
             var data = JsonSerializer.Serialize(notification, new JsonSerializerOptions
