@@ -13,12 +13,12 @@ namespace Services
         private readonly IConfiguration _configuration;
         public NotificationService(IConfiguration configuration) => _configuration = configuration;
 
-        public async Task NotifyAsync(string customer, string message)
+        public async Task NotifyAsync(string cliente, string mensagem)
         {
             var notification = new DiscordNotificationModel(
                 _configuration["DiscordWebHookUrl"],
-                message,
-                customer);
+                cliente,
+                mensagem);
 
             var httpClient = new HttpClient();
             var data = JsonSerializer.Serialize(notification, new JsonSerializerOptions
